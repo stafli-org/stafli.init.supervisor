@@ -162,5 +162,9 @@ stderr_events_enabled=true\n\
 
 # Command to execute
 # Defaults to /bin/bash.
-#CMD ["/bin/bash"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf", "--nodaemon"]
+
+# Ports to expose
+# Defaults to none.
+#EXPOSE ...
 
