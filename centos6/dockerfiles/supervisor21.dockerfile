@@ -70,17 +70,24 @@ LABEL description="Stafli Supervisor Init (stafli/stafli.init.supervisor), Based
 # Packages
 #
 
-# Install the supervisor packages
+# Install supervisor packages
 #  - supervisor: for supervisord, to launch and manage processes
+# Install python packages
+#  - python-pip: for pip, the alternative Python package installer
+# Install python modules
+#  - supervisor-stdout: a simple supervisord event listener to relay process output to supervisor’s stdout
 RUN printf "Installing repositories and packages...\n" && \
     \
     printf "Install the required packages...\n" && \
     rpm --rebuilddb && \
     yum makecache && yum install -y \
-      supervisor && \
+      supervisor python-pip && \
     \
     printf "Cleanup the Package Manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/* && \
+    \
+    printf "Instal python packages...\n" && \
+    pip install supervisor-stdout && \
     \
     printf "Finished installing repositories and packages...\n";
 
@@ -90,42 +97,62 @@ RUN printf "Installing repositories and packages...\n" && \
 
 # Update daemon configuration
 # - Supervisor
-RUN printf "Updading Daemon configuration...\n"; \
+RUN printf "Updading Daemon configuration...\n" && \
     \
-    printf "Updading Supervisor configuration...\n"; \
-    mkdir -p /var/log/supervisor; \
+    printf "Updading Supervisor configuration...\n" && \
     \
     # ignoring /etc/sysconfig/supervisor \
     \
     # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    perl -0p -i -e "s>nodaemon=false>nodaemon=true>" ${file}; \
-    perl -0p -i -e "s>\[unix_http_server\]\nhttp_port=.*>\[unix_http_server\]\nhttp_port=/dev/shm/supervisor.sock>" ${file}; \
-    perl -0p -i -e "s>\[supervisorctl\]\nserverurl=.*>\[supervisorctl\]\nserverurl=unix:///dev/shm/supervisor.sock>" ${file}; \
+    file="/etc/supervisord.conf" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
+    perl -0p -i -e "s>logfile=/var/log/supervisor/supervisord.log>logfile=/dev/null>" ${file} && \
+    perl -0p -i -e "s>loglevel=warn>loglevel=info>" ${file} && \
+    perl -0p -i -e "s>nodaemon=false>nodaemon=true>" ${file} && \
+    perl -0p -i -e "s>http_port=/var/tmp/supervisor.sock>http_port=/dev/shm/supervisor.sock>" ${file} && \
+    perl -0p -i -e "s>\[supervisorctl\]\nserverurl=.*>\[supervisorctl\]\nserverurl=unix:///dev/shm/supervisor.sock>" ${file} && \
+    perl -0p -i -e "s>\[supervisord\]>\[supervisord\]\n\
+# send logs to stdout and stderr\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+stderr_logfile=/dev/stderr\n\
+stderr_logfile_maxbytes=0>" ${file} && \
+    printf "# stdout\n\
+[eventlistener:stdout]\n\
+command=supervisor_stdout\n\
+buffer_size=100\n\
+events=PROCESS_LOG\n\
+result_handler=supervisor_stdout:event_handler\n\
+\n" >> ${file} && \
     # includes available only on v3.x+ \
-    printf "Done patching ${file}...\n"; \
+    printf "Done patching ${file}...\n" && \
     \
     # init is not working at this point \
     \
     # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
+    file="/etc/supervisord.conf" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
     printf "# rclocal\n\
 [program:rclocal]\n\
 command=/bin/bash -c \"/etc/rc.local\"\n\
 autostart=true\n\
 autorestart=false\n\
 startsecs=0\n\
-\n" >> ${file}; \
-    printf "Done patching ${file}...\n"; \
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+stderr_logfile=/dev/stderr\n\
+stderr_logfile_maxbytes=0\n\
+stdout_events_enabled=true\n\
+stderr_events_enabled=true\n\
+\n" >> ${file} && \
+    printf "Done patching ${file}...\n" && \
     \
     # /etc/rc.local \
-    file="/etc/rc.local"; \
-    touch ${file} && chown root ${file} && chmod 755 ${file}; \
+    file="/etc/rc.local" && \
+    touch ${file} && chown root ${file} && chmod 755 ${file} && \
     \
-    printf "\n# Testing configuration...\n"; \
-    printf "Done testing configuration...\n"; \
+    printf "\n# Testing configuration...\n" && \
+    printf "Done testing configuration...\n" && \
     \
     printf "Finished Daemon configuration...\n";
 
