@@ -22,18 +22,23 @@
 # Workaround for docker commands
 alias FROM="#";
 alias MAINTAINER="#";
-alias ENV='export';
+alias LABEL="#";
 alias ARG='export';
+alias ENV='export';
 alias RUN='';
+alias CMD='#';
 shopt -s expand_aliases;
 
+# Load project settings
+source $(dirname "${BASH_SOURCE[0]}")/../.env;
+
 # Load dockerfile
-source "$(dirname $(readlink -f $0))/../dockerfiles/supervisor30.dockerfile";
+source "$(dirname $(readlink -f $0))/../dockerfiles/${IMAGE_TAG_PREFIX}${DISTRO_DEBIAN8_VERSION}.dockerfile";
 
 #
 # Cleanup
 #
 
 # Remove dupplicated services
-apt-get remove --purge -y supervisor;
+#apt-get remove --purge -y supervisor;
 

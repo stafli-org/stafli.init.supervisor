@@ -22,18 +22,23 @@
 # Workaround for docker commands
 alias FROM="#";
 alias MAINTAINER="#";
-alias ENV='export';
+alias LABEL="#";
 alias ARG='export';
+alias ENV='export';
 alias RUN='';
+alias CMD='#';
 shopt -s expand_aliases;
 
+# Load project settings
+source $(dirname "${BASH_SOURCE[0]}")/../.env;
+
 # Load dockerfile
-source "$(dirname $(readlink -f $0))/../dockerfiles/supervisor31.dockerfile";
+source "$(dirname $(readlink -f $0))/../dockerfiles/${IMAGE_TAG_PREFIX}${DISTRO_CENTOS7_VERSION}.dockerfile";
 
 #
 # Cleanup
 #
 
 # Remove dupplicated services
-yum remove -y supervisor;
+#yum remove -y supervisor;
 

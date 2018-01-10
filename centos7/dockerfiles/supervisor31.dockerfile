@@ -171,7 +171,7 @@ stderr_events_enabled=true\n\
     touch ${file} && chown root ${file} && chmod 755 ${file} && \
     \
     printf "\n# Testing configuration...\n" && \
-    echo "Testing $(which supervisord):"; $(which supervisord) -v && \
+    echo "Testing $(which supervisord):" && $(which supervisord) -v && \
     printf "Done testing configuration...\n" && \
     \
     printf "Finished Daemon configuration...\n";
