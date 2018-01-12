@@ -78,14 +78,14 @@ LABEL description="Stafli Supervisor Init (stafli/stafli.init.supervisor), Based
 #  - supervisor-stdout: a simple supervisord event listener to relay process output to supervisor’s stdout
 RUN printf "Installing repositories and packages...\n" && \
     \
-    printf "Install the required packages...\n" && \
+    printf "Install the selected packages...\n" && \
     yum makecache && yum install -y \
       supervisor python-pip && \
     \
-    printf "Cleanup the Package Manager...\n" && \
+    printf "Cleanup the package manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/* && \
     \
-    printf "Instal python packages...\n" && \
+    printf "Instal the python packages...\n" && \
     pip install supervisor-stdout && \
     \
     printf "Finished installing repositories and packages...\n";

@@ -78,14 +78,14 @@ LABEL description="Stafli Supervisor Init (stafli/stafli.init.supervisor), Based
 #  - supervisor-stdout: a simple supervisord event listener to relay process output to supervisor’s stdout
 RUN printf "Installing repositories and packages...\n" && \
     \
-    printf "Install the required packages...\n" && \
+    printf "Install the selected packages...\n" && \
     apt-get update && apt-get install -qy \
       supervisor python-pip && \
     \
-    printf "# Cleanup the Package Manager...\n" && \
+    printf "Cleanup the package manager...\n" && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     \
-    printf "Override python configuration...\n" && \
+    printf "Override the python configuration...\n" && \
     mkdir -p /root/.pip && \
     # /root/.pip/pip.conf \
     file="/root/.pip/pip.conf" && \
