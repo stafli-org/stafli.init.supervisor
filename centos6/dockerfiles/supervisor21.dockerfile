@@ -70,24 +70,25 @@ LABEL description="Stafli Supervisor Init (stafli/stafli.init.supervisor), Based
 # Packages
 #
 
-# Install supervisor packages
-#  - supervisor: for supervisord, to launch and manage processes
 # Install python packages
 #  - python-pip: for pip, the alternative Python package installer
+#  - python-setuptools: extensions to the python-distutils for large or complex distributions
+#  - python-meld3: HTML/XML templating system for Python
 # Install python modules
+#  - supervisor: for supervisord, to launch and manage processes
 #  - supervisor-stdout: a simple supervisord event listener to relay process output to supervisor’s stdout
 RUN printf "Installing repositories and packages...\n" && \
     \
     printf "Install the selected packages...\n" && \
     rpm --rebuilddb && \
     yum makecache && yum install -y \
-      supervisor python-pip && \
+      python-pip python-setuptools python-meld3 && \
     \
     printf "Cleanup the package manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/* && \
     \
     printf "Instal the python packages...\n" && \
-    pip install supervisor-stdout && \
+    pip install "supervisor>=3.1.0,<3.2.0" supervisor-stdout && \
     \
     printf "Finished installing repositories and packages...\n";
 
@@ -105,36 +106,46 @@ RUN printf "Updading Daemon configuration...\n" && \
     \
     # /etc/supervisord.conf \
     file="/etc/supervisord.conf" && \
+    echo_supervisord_conf > ${file} && \
     printf "\n# Applying configuration for ${file}...\n" && \
     perl -0p -i -e "s>logfile=/var/log/supervisor/supervisord.log>logfile=/dev/null>" ${file} && \
     perl -0p -i -e "s>loglevel=warn>loglevel=info>" ${file} && \
     perl -0p -i -e "s>nodaemon=false>nodaemon=true>" ${file} && \
-    perl -0p -i -e "s>http_port=/var/tmp/supervisor.sock>http_port=/dev/shm/supervisor.sock>" ${file} && \
+    perl -0p -i -e "s>\[unix_http_server\]\nfile=.*>\[unix_http_server\]\nfile=/dev/shm/supervisor.sock>" ${file} && \
     perl -0p -i -e "s>\[supervisorctl\]\nserverurl=.*>\[supervisorctl\]\nserverurl=unix:///dev/shm/supervisor.sock>" ${file} && \
+    printf "\n\
+[include]\n\
+files = supervisord.d/*.ini\n\
+files = supervisord.d/*.conf\n\
+\n" >> ${file} && \
     perl -0p -i -e "s>\[supervisord\]>\[supervisord\]\n\
 # send logs to stdout and stderr\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 stderr_logfile=/dev/stderr\n\
 stderr_logfile_maxbytes=0>" ${file} && \
+    \
+    # /etc/supervisord.d/ \
+    mkdir -p /etc/supervisord.d/ && \
+    \
+    # /etc/supervisord.d/stdout.conf \
+    file="/etc/supervisord.d/stdout.conf" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
     printf "# stdout\n\
 [eventlistener:stdout]\n\
 command=supervisor_stdout\n\
 buffer_size=100\n\
 events=PROCESS_LOG\n\
 result_handler=supervisor_stdout:event_handler\n\
-\n" >> ${file} && \
-    # includes available only on v3.x+ \
+\n" > ${file} && \
     printf "Done patching ${file}...\n" && \
     \
-    # init is not working at this point \
-    \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf" && \
+    # /etc/supervisord.d/init.conf \
+    file="/etc/supervisord.d/init.conf" && \
     printf "\n# Applying configuration for ${file}...\n" && \
-    printf "# rclocal\n\
-[program:rclocal]\n\
-command=/bin/bash -c \"/etc/rc.local\"\n\
+    printf "# init\n\
+[program:init]\n\
+command=/bin/bash -c \"supervisorctl start rclocal;\"\n\
 autostart=true\n\
 autorestart=false\n\
 startsecs=0\n\
@@ -144,7 +155,25 @@ stderr_logfile=/dev/stderr\n\
 stderr_logfile_maxbytes=0\n\
 stdout_events_enabled=true\n\
 stderr_events_enabled=true\n\
-\n" >> ${file} && \
+\n" > ${file} && \
+    printf "Done patching ${file}...\n" && \
+    \
+    # /etc/supervisord.d/rclocal.conf \
+    file="/etc/supervisord.d/rclocal.conf" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
+    printf "# rclocal\n\
+[program:rclocal]\n\
+command=/bin/bash -c \"/etc/rc.local\"\n\
+autostart=false\n\
+autorestart=false\n\
+startsecs=0\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+stderr_logfile=/dev/stderr\n\
+stderr_logfile_maxbytes=0\n\
+stdout_events_enabled=true\n\
+stderr_events_enabled=true\n\
+\n" > ${file} && \
     printf "Done patching ${file}...\n" && \
     \
     # /etc/rc.local \
@@ -152,6 +181,7 @@ stderr_events_enabled=true\n\
     touch ${file} && chown root ${file} && chmod 755 ${file} && \
     \
     printf "\n# Testing configuration...\n" && \
+    echo "Testing $(which supervisord):" && $(which supervisord) -v && \
     printf "Done testing configuration...\n" && \
     \
     printf "Finished Daemon configuration...\n";
