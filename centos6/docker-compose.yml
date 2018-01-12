@@ -1,6 +1,6 @@
 ---
 #
-#    CentOS 6 (centos6) Supervisor21 System (docker-compose.yml)
+#    CentOS 6 (centos6) Supervisor31 System (docker-compose.yml)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
@@ -27,7 +27,7 @@ version: '2'
 #
 services:
 
-  init_supervisor21_centos6:
+  init_supervisor31_centos6:
     labels:
       - "description=$PROJECT_NAME, $PROJECT_DESCRIPTION"
       - "maintainer=$PROJECT_AUTHORS_LPALGARVIO_NAME <$PROJECT_AUTHORS_LPALGARVIO_EMAIL>"

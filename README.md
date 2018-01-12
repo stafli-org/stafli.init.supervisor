@@ -23,9 +23,8 @@ The services use custom images as a starting point for the following distributio
 
 ## Services
 These are the services described by the dockerfile and docker-compose files:
-- Supervisor 2.1.x (centos6), built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional [Supervisor](http://supervisord.org) packages
 - Supervisor 3.0.x (debian7 and debian8), built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional [Supervisor](http://supervisord.org) packages
-- Supervisor 3.1.x (centos7), built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional [Supervisor](http://supervisord.org) packages
+- Supervisor 3.1.x (centos6 and centos7), built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional [Supervisor](http://supervisord.org) packages
 
 ## Images
 These are the [resulting images](https://hub.docker.com/r/stafli/stafli.init.supervisor/tags) upon building:
@@ -33,7 +32,7 @@ These are the [resulting images](https://hub.docker.com/r/stafli/stafli.init.sup
   - stafli/stafli.init.supervisor:supervisor30_debian8
   - stafli/stafli.init.supervisor:supervisor30_debian7
   - stafli/stafli.init.supervisor:supervisor31_centos7
-  - stafli/stafli.init.supervisor:supervisor21_centos6
+  - stafli/stafli.init.supervisor:supervisor31_centos6
 
 ## Containers
 These containers can be created from the images:
@@ -41,7 +40,7 @@ These containers can be created from the images:
   - stafli_init_supervisor30_debian8_xxx
   - stafli_init_supervisor30_debian7_xxx
   - stafli_init_supervisor31_centos7_xxx
-  - stafli_init_supervisor21_centos6_xxx
+  - stafli_init_supervisor31_centos6_xxx
 
 ## Usage
 

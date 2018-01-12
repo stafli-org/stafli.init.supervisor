@@ -1,6 +1,6 @@
 
 #
-#    CentOS 6 (centos6) Supervisor21 System (dockerfile)
+#    CentOS 6 (centos6) Supervisor31 System (dockerfile)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
