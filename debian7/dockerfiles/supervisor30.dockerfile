@@ -70,20 +70,27 @@ LABEL description="Stafli Supervisor Init (stafli/stafli.init.supervisor), Based
 # Packages
 #
 
-# Install supervisor packages
-#  - supervisor: for supervisord, to launch and manage processes
-# Install python packages
-#  - python-pip: for pip, the alternative Python package installer
-# Install python modules
+# Refresh the package manager
+# Install the selected packages
+#   Install the supervisor packages
+#    - supervisor: for supervisord, to launch and manage processes
+#   Install the python packages
+#    - python-pip: for pip, the alternative Python package installer
+# Cleanup the package manager
+# Override the python configuration
+# Install the python modules
 #  - supervisor-stdout: a simple supervisord event listener to relay process output to supervisor’s stdout
 RUN printf "Installing repositories and packages...\n" && \
     \
+    printf "Refresh the package manager...\n" && \
+    apt-get update && \
+    \
     printf "Install the selected packages...\n" && \
-    apt-get update && apt-get install -qy \
+    apt-get install -qy \
       supervisor python-pip && \
     \
     printf "Cleanup the package manager...\n" && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && rm -Rf /var/cache/apt/* && \
     \
     printf "Override the python configuration...\n" && \
     mkdir -p /root/.pip && \
@@ -96,7 +103,7 @@ PYPI_ENDPOINT = "https://pypi.python.org/pypi"\n\
 DEFAULT_REPOSITORY = "https://pypi.python.org/pypi"\n\
 \n" > ${file} && \
     \
-    printf "Instal python packages...\n" && \
+    printf "Instal the python modules...\n" && \
     pip install supervisor-stdout && \
     \
     printf "Finished installing repositories and packages...\n";

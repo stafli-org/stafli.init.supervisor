@@ -70,24 +70,29 @@ LABEL description="Stafli Supervisor Init (stafli/stafli.init.supervisor), Based
 # Packages
 #
 
-# Install python packages
-#  - python-pip: for pip, the alternative Python package installer
-#  - python-setuptools: extensions to the python-distutils for large or complex distributions
-#  - python-meld3: HTML/XML templating system for Python
-# Install python modules
+# Refresh the package manager
+# Install the selected packages
+#   Install the python packages
+#    - python-pip: for pip, the alternative Python package installer
+#    - python-setuptools: extensions to the python-distutils for large or complex distributions
+#    - python-meld3: HTML/XML templating system for Python
+# Cleanup the package manager
+# Install the python modules
 #  - supervisor: for supervisord, to launch and manage processes
 #  - supervisor-stdout: a simple supervisord event listener to relay process output to supervisor’s stdout
 RUN printf "Installing repositories and packages...\n" && \
     \
+    printf "Refresh the package manager...\n" && \
+    rpm --rebuilddb && yum makecache && \
+    \
     printf "Install the selected packages...\n" && \
-    rpm --rebuilddb && \
-    yum makecache && yum install -y \
+    yum install -y \
       python-pip python-setuptools python-meld3 && \
     \
     printf "Cleanup the package manager...\n" && \
-    yum clean all && rm -Rf /var/lib/yum/* && \
+    yum clean all && rm -Rf /var/lib/yum/* && rm -Rf /var/cache/yum/* && \
     \
-    printf "Instal the python packages...\n" && \
+    printf "Instal the python modules...\n" && \
     pip install "supervisor>=3.1.0,<3.2.0" supervisor-stdout && \
     \
     printf "Finished installing repositories and packages...\n";
