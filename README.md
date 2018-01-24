@@ -23,23 +23,25 @@ The services use custom images as a starting point for the following distributio
 
 ## Services
 These are the services described by the dockerfile and docker-compose files:
-- Supervisor 3.0.x (debian7 and debian8), built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional [Supervisor](http://supervisord.org) packages
-- Supervisor 3.1.x (centos6 and centos7), built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional [Supervisor](http://supervisord.org) packages
+- Supervisor 3.0.x (debian8 and debian7), built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional [Supervisor](http://supervisord.org) packages
+- Supervisor 3.1.x (centos7 and centos6), built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional [Supervisor](http://supervisord.org) packages
 
 ## Images
 These are the [resulting images](https://hub.docker.com/r/stafli/stafli.init.supervisor/tags) upon building:
-- Supervisor 3.x.x:
+- Stable:
   - stafli/stafli.init.supervisor:supervisor30_debian8   [![](https://images.microbadger.com/badges/image/stafli/stafli.init.supervisor:supervisor30_debian8.svg)](https://microbadger.com/images/stafli/stafli.init.supervisor:supervisor30_debian8 "Get your own image badge on microbadger.com")
-  - stafli/stafli.init.supervisor:supervisor30_debian7   [![](https://images.microbadger.com/badges/image/stafli/stafli.init.supervisor:supervisor30_debian7.svg)](https://microbadger.com/images/stafli/stafli.init.supervisor:supervisor30_debian7 "Get your own image badge on microbadger.com")
   - stafli/stafli.init.supervisor:supervisor31_centos7   [![](https://images.microbadger.com/badges/image/stafli/stafli.init.supervisor:supervisor31_centos7.svg)](https://microbadger.com/images/stafli/stafli.init.supervisor:supervisor31_centos7 "Get your own image badge on microbadger.com")
+- Old Stable:
+  - stafli/stafli.init.supervisor:supervisor30_debian7   [![](https://images.microbadger.com/badges/image/stafli/stafli.init.supervisor:supervisor30_debian7.svg)](https://microbadger.com/images/stafli/stafli.init.supervisor:supervisor30_debian7 "Get your own image badge on microbadger.com")
   - stafli/stafli.init.supervisor:supervisor31_centos6   [![](https://images.microbadger.com/badges/image/stafli/stafli.init.supervisor:supervisor31_centos6.svg)](https://microbadger.com/images/stafli/stafli.init.supervisor:supervisor31_centos6 "Get your own image badge on microbadger.com")
 
 ## Containers
 These containers can be created from the images:
-- Supervisor 3.x.x:
+- Stable:
   - stafli_init_supervisor30_debian8_xxx
-  - stafli_init_supervisor30_debian7_xxx
   - stafli_init_supervisor31_centos7_xxx
+- Old Stable:
+  - stafli_init_supervisor30_debian7_xxx
   - stafli_init_supervisor31_centos6_xxx
 
 ## Usage
