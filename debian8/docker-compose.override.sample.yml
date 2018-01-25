@@ -30,4 +30,5 @@ services:
   init_supervisor30_debian8:
     build:
       args:
+        app_supervisor_loglevel: "info"
 

@@ -57,6 +57,8 @@ services:
     build:
       context: "./dockerfiles"
       dockerfile: "${IMAGE_TAG_PREFIX}${DISTRO_CENTOS6_VERSION}.dockerfile"
+      args:
+        app_supervisor_loglevel: "warn"
     logging:
       driver: "json-file"
     working_dir: "/tmp"

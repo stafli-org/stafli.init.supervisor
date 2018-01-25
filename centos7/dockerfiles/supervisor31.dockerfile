@@ -54,6 +54,8 @@ LABEL description="Stafli Supervisor Init (stafli/stafli.init.supervisor), Based
 # Arguments
 #
 
+ARG app_supervisor_loglevel="warn"
+
 #
 # Environment
 #
@@ -112,7 +114,7 @@ RUN printf "Updading Daemon configuration...\n" && \
     file="/etc/supervisord.conf" && \
     printf "\n# Applying configuration for ${file}...\n" && \
     perl -0p -i -e "s>logfile=/var/log/supervisor/supervisord.log>logfile=/dev/null>" ${file} && \
-    perl -0p -i -e "s>loglevel=warn>loglevel=info>" ${file} && \
+    perl -0p -i -e "s>loglevel=info>loglevel=${app_supervisor_loglevel}>" ${file} && \
     perl -0p -i -e "s>nodaemon=false>nodaemon=true>" ${file} && \
     perl -0p -i -e "s>\[unix_http_server\]\nfile=.*>\[unix_http_server\]\nfile=/dev/shm/supervisor.sock>" ${file} && \
     perl -0p -i -e "s>\[supervisorctl\]\nserverurl=.*>\[supervisorctl\]\nserverurl=unix:///dev/shm/supervisor.sock>" ${file} && \

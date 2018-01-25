@@ -30,4 +30,5 @@ services:
   init_supervisor31_centos6:
     build:
       args:
+        app_supervisor_loglevel: "info"
 
